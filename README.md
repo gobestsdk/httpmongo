@@ -10,3 +10,9 @@ http.method:put
 
 ###query
 http.get
+
+###delete
+http.method:delete
+
+###update
+http.method:update
