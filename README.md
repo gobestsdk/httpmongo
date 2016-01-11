@@ -28,4 +28,4 @@ http.method:get
 http.method:delete
 
 ###update
-http.method:update
+http.method:put
