@@ -1,4 +1,4 @@
-package httpDB
+package httpmongo
 
 import(
 	"gopkg.in/mgo.v2"
