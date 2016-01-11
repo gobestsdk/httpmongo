@@ -9,8 +9,17 @@ http方式的增删查改
 
 httpmongo借鉴了coachdb的rest api
 
+路由设计如下：
+localhost://DBname/Collectionname
+
 ###insert
 http.method:post
+
+``` javascript
+ajax.
+
+```
+
 
 ###query
 http.method:get
