@@ -12,20 +12,66 @@ httpmongo借鉴了coachdb的rest api
 路由设计如下：
 localhost://DBname/Collectionname
 
-###insert
-http.method:post
+###header新增字段
+"dbcmd":""
+```javascript
 
-``` javascript
-ajax.
+ <script type="text/javascript" language="javascript">
+        $(function() {
+
+            $("#test").click(function() {
+                $.ajax({
+                    type: "GET",
+                    url: "/mongo/DBname/Collectionname",
+                    beforeSend: function(request) {
+                        request.setRequestHeader("dbcmd", "find");
+                    },
+                    success: function(result) {
+                        alert(result);
+                    }
+                });
+            });
+        });
+    </script>
 
 ```
 
+### get方法支持以下dbcmd:
+#### Session.DatabaseNames
+获取当前回话中的所有数据库名
 
-###query
-http.method:get
+#### DB.CollectionNames
+获取数据库中的所有集合名
 
-###delete
-http.method:delete
+#### C.Count
+获取集合中的元素数目
+这也是默认方法
 
-###update
-http.method:put
+#### C.Find.All
+查询该集合所有数据
+
+### post方法支持以下dbcmd
+
+#### C.Insert
+一次可以插入多个对象
+
+#### C.Find.One
+查询单条数据
+
+#### C.Find
+查询符合条件的所有数据
+
+#### C.Remove
+删除符合条件的1个数据
+
+#### C.RemoveAll
+删除符合条件的所有数据
+
+#### C.Update
+更新符合条件的1个数据
+
+#### C.UpdateAll
+更新符合条件的所有数据
+
+#### C.Upsert
+更新插入符合条件的1个数据
