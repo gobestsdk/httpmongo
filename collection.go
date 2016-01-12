@@ -2,7 +2,6 @@ package httpmongo
 
 import (
 	"encoding/json"
-	"log"
 )
 
 func insert_jsonstring(DB string, C string, jsonstr string) error {
@@ -24,18 +23,3 @@ func insert_jsonbytes(DB string, C string, jsonbytes []byte) error {
 	return nil
 }
 
-func find_filterstring(DB string, C string, filterstr string) []JsonDocument {
-	c := MgoDataCollect(DB, C)
-	var filter interface{}
-	err := json.Unmarshal([]byte(filterstr), &filter)
-	if err != nil {
-		panic(err)
-	}
-	log.Print(filter)
-	query := c.Find(nil)
-
-	result := []JsonDocument{}
-
-	query.All(&result)
-	return result
-}
