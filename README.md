@@ -37,6 +37,11 @@ localhost://DBname/Collectionname
 ```
 
 ### get方法支持以下dbcmd:
+#### Session.DatabaseNames
+获取当前回话中的所有数据库名
+
+#### DB.CollectionNames
+获取数据库中的所有集合名
 
 #### C.Count
 获取集合中的元素数目
@@ -56,3 +61,17 @@ localhost://DBname/Collectionname
 #### C.Find
 查询符合条件的所有数据
 
+#### C.Remove
+删除符合条件的1个数据
+
+#### C.RemoveAll
+删除符合条件的所有数据
+
+#### C.Update
+更新符合条件的1个数据
+
+#### C.UpdateAll
+更新符合条件的所有数据
+
+#### C.Upsert
+更新插入符合条件的1个数据
