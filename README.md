@@ -12,13 +12,34 @@ httpmongo借鉴了coachdb的rest api
 路由设计如下：
 localhost://DBname/Collectionname
 
+###header新增字段
+"db-cmd":""
+```javascript
+
+ <script type="text/javascript" language="javascript">
+        $(function() {
+
+            $("#test").click(function() {
+                $.ajax({
+                    type: "GET",
+                    url: "/mongo/DBname/Collectionname",
+                    beforeSend: function(request) {
+                        request.setRequestHeader("dbcmd", "find");
+                    },
+                    success: function(result) {
+                        alert(result);
+                    }
+                });
+            });
+        });
+    </script>
+
+```
+
 ###insert
 http.method:post
 
-``` javascript
-ajax.
 
-```
 
 
 ###query
