@@ -13,7 +13,7 @@ httpmongo借鉴了coachdb的rest api
 localhost://DBname/Collectionname
 
 ###header新增字段
-"db-cmd":""
+"dbcmd":""
 ```javascript
 
  <script type="text/javascript" language="javascript">
@@ -36,17 +36,23 @@ localhost://DBname/Collectionname
 
 ```
 
-###insert
-http.method:post
+### get方法支持以下dbcmd:
 
+#### C.Count
+获取集合中的元素数目
+这也是默认方法
 
+#### C.Find.All
+查询该集合所有数据
 
+### post方法支持以下dbcmd
 
-###query
-http.method:get
+#### C.Insert
+一次可以插入多个对象
 
-###delete
-http.method:delete
+#### C.Find.One
+查询单条数据
 
-###update
-http.method:put
+#### C.Find
+查询符合条件的所有数据
+
