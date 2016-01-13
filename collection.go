@@ -35,6 +35,8 @@ func dbo_Mongo_DB_C(w http.ResponseWriter, r *http.Request) error {
 			insert(DB, C, args, w)
 		case "insertmany":
 			insertmany(DB, C, args, w)
+		case "remove":
+			remove(DB, C, args, w)
 		default:
 			return errors.New("请求函数名未知")
 		}
@@ -107,33 +109,78 @@ func insert(DB string, C string, args string, w http.ResponseWriter) {
 	if err != nil {
 		panic("插入失败")
 	}
-	out := "resultn:1"
+	out :=  "{\"nInsert\":0}"
 	w.Write([]byte(out))
 }
 func insertmany(DB string, C string, args string, w http.ResponseWriter) {
 	c := MgoDataCollect(DB, C)
 	/*args
-	{"list":[
+	[
 
 	{"name":"lipeng"},{"name":"test"}
 
-	]}
+	]
 	*/
-	var header = "{\"list\":["
-	var footer = "]}"
-	var inserterlist moejson.Mjson
-	var ds = header + args + footer
+	var inserterlist []interface{}
+	var ds ="["+ args +"]"
 	log.Print(ds)
 	err := json.Unmarshal([]byte(ds), &inserterlist)
 	if err != nil {
 		panic("无法 序列化为 []json")
 	}
-	log.Print(inserterlist)
-	inserter := [2]moejson.Mjson{moejson.Mjson{"name": "m1"}, moejson.Mjson{"name": "m2"}}
-	err = c.Insert(inserter)
+
+	err = c.Insert(inserterlist...)
 	if err != nil {
-		panic("插入失败")
+		panic("批量插入失败")
 	}
-	out := "resultn:" + xstring.Tostring(2)
+
+	out := "{\"nInsert\":" + xstring.Tostring(len(inserterlist))+"}"
 	w.Write([]byte(out))
+}
+func remove(DB string, C string, args string, w http.ResponseWriter) {
+	if(args==""){
+		out := "{\"nRemoved\":0}"
+		w.Write([]byte(out))
+	}else{
+		c := MgoDataCollect(DB, C)
+		var filter moejson.Mjson
+		err := json.Unmarshal([]byte(args), &filter)
+		if err != nil {
+			panic("条件无法序列化为 json")
+		}
+		removeinfo,err := c.RemoveAll(filter)
+		if err != nil {
+			panic("删除失败")
+		}
+		out :=  "{\"nRemove\":"+xstring.Tostring(removeinfo.Removed)+"}"
+		w.Write([]byte(out))
+	}
+}
+func save(DB string, C string, args string, w http.ResponseWriter) {
+	if(args==""){
+		out := "{\"nSave\":0}"
+		w.Write([]byte(out))
+	}else{
+		
+		var filter moejson.Mjson
+		err := json.Unmarshal([]byte(args), &filter)
+		if err != nil {
+			panic("条件无法序列化为 json")
+		}
+		s,_:=MgoSession()
+		
+		result:=moejson.Mjson{}
+
+		var cmd moejson.Mjson
+		cmd=moejson.Mjson{
+			{"save":C},
+		}
+		
+		err= s.Run(cmd,&result)
+		if err != nil {
+			panic("删除失败")
+		}
+		out :=  "{\"nSave\":1}"
+		w.Write([]byte(out))
+	}
 }
