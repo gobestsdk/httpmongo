@@ -1,6 +1,7 @@
 package httpmongo
 
 import (
+	"errors"
 	"log"
 
 	"gopkg.in/mgo.v2"
@@ -15,22 +16,23 @@ var mgoSession *mgo.Session
 var collection *mgo.Collection
 var err error
 
-func MgoSession() *mgo.Session {
+func MgoSession() (*mgo.Session, error) {
 	if mgoSession == nil {
 		mgoSession, err = mgo.Dial(MONGO_URL)
 		if err != nil {
-			log.Println(err)
+			log.Println("数据库连接失败")
+			return nil, errors.New("数据库连接失败")
 		}
 	}
 	mgoSession.SetMode(mgo.Monotonic, true)
-	return mgoSession.Clone()
+	return mgoSession.Clone(), nil
 }
 
 //MgoDatabase 切换数据库
-func MgoDatabase(name string) *mgo.Database {
-	session := MgoSession()
+func MgoDatabase(DB string) *mgo.Database {
+	session, _ := MgoSession()
 	if database == nil {
-		database = session.DB(name)
+		database = session.DB(DB)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -39,10 +41,10 @@ func MgoDatabase(name string) *mgo.Database {
 }
 
 //MgoDataCollect 同时切换数据库和集合
-func MgoDataCollect(data, c string) *mgo.Collection {
-	s := MgoSession()
+func MgoDataCollect(DB, c string) *mgo.Collection {
+	session, _ := MgoSession()
 	if collection == nil {
-		collection = s.DB(data).C(c)
+		collection = session.DB(DB).C(c)
 	}
 	return collection
 }
