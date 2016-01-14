@@ -14,8 +14,8 @@ httpdb把数据库封装成一个高性能http读写接口，可以当作中间�
 
 ```
 
-### &data
-&data表示http.request.body体中的byte[]数据,该数据应该可以被解析为json
+### &httprequestbody
+&httprequestbody表示http.request.body体中的byte[]数据,该数据应该可以被解析为json
 应当用&data来表示比较长的json数据，较短的json数据直接放在url中即可
 
 ### 以下函数名，与mongo shell保持一致命名
@@ -23,7 +23,7 @@ httpdb把数据库封装成一个高性能http读写接口，可以当作中间�
 官方文档
 [https://docs.mongodb.org/manual/reference/method/](https://docs.mongodb.org/manual/reference/method/)
 ``` shell
-/mongo/show dbs	
+/mongo.show dbs	
 
 /mongo/DB.show collections
 
@@ -38,3 +38,4 @@ httpdb把数据库封装成一个高性能http读写接口，可以当作中间�
 /mongo/DB/C.update()    在聚集中更新对象。update() 有许多参数
 ```
 其余重复命令，暂不支持
+
