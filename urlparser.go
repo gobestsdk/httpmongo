@@ -10,8 +10,8 @@ import (
 const (
 	defname              = "[^:?&*/.]+"
 	funcs                = "[A-Za-z0-9_.]+"
-	Mongo_path           = "^/mongo/"
-	Mongo_func_path      = "^/mongo/.+"
+	Mongo_path           = "^/mongo.+"
+	Mongo_func_path      = "^/mongo..+"
 	Mongo_DB_func_path   = "^/mongo/" + defname + "..+"
 	Mongo_DB_C_func_path = "^/mongo/" + defname + "/" + defname + "..+"
 )

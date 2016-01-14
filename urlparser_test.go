@@ -8,7 +8,7 @@ import (
 
 func Test_Mongo_parse(t *testing.T) {
 
-	cmd, _ := Mongo_parse("/mongo/show dbs")
+	cmd, _ := Mongo_parse("/mongo.show dbs")
 	fmt.Printf(cmd)
 }
 func Test_Mongo_DB_parse(t *testing.T) {
