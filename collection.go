@@ -6,10 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
-	"github.com/golangframework/moejson"
+	"github.com/golangframework/JSON"
+	"github.com/golangframework/Object"
 	"github.com/golangframework/moeregexp"
-	"github.com/golangframework/xstring"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -23,18 +24,18 @@ func dbo_Mongo_DB_C(w http.ResponseWriter, r *http.Request) error {
 
 		DB, C, cmd, _ := Mongo_DB_C_parse(r.URL.Path)
 
-		funcname := cmd[0:xstring.Index(cmd, "(")]
-		args := cmd[xstring.Index(cmd, "(")+1 : len(cmd)-1]
+		funcname := cmd[0:strings.Index(cmd, "(")]
+		args := cmd[strings.Index(cmd, "(")+1 : len(cmd)-1]
 
-		if xstring.Contains(args, httpRequestBody) {
+		if strings.Contains(args, httpRequestBody) {
 			body, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				panic("没有 接收到 post数据。url不应该有" + httpRequestBody)
 			}
 			log.Print(string(body))
-			args = xstring.Replace(args, httpRequestBody, string(body))
+			args = strings.Replace(args, httpRequestBody, string(body), -1)
 		}
-		log.Print(args)
+
 		switch funcname {
 		case "count":
 			count(DB, C, w)
@@ -67,14 +68,14 @@ func dbo_Mongo_DB_C(w http.ResponseWriter, r *http.Request) error {
 func count(DB string, C string, w http.ResponseWriter) {
 	c := MgoDataCollect(DB, C)
 	count_, _ := c.Count()
-	out := xstring.Tostring(count_)
+	out := Object.Tostring(count_)
 	w.Write([]byte(out))
 }
 func find(DB string, C string, args string, w http.ResponseWriter) {
 	c := MgoDataCollect(DB, C)
-	js := []moejson.Mjson{} //结果集合
+	js := []JSON.JSON{} //结果集合
 
-	var filter moejson.Mjson
+	var filter JSON.JSON
 	if args == "" {
 		args = "{}"
 	}
@@ -85,28 +86,28 @@ func find(DB string, C string, args string, w http.ResponseWriter) {
 
 	err = c.Find(&filter).All(&js)
 
-	jsonlist := moejson.ToJsonarraystring(js) //结果json字符串集合
-	out := "[" + xstring.Join(jsonlist, ",") + "]"
+	jsonlist := JSON.ToJsonarraystring(js) //结果json字符串集合
+	out := "[" + strings.Join(jsonlist, ",") + "]"
 	w.Write([]byte(out))
 }
 func findcount(DB string, C string, args string, w http.ResponseWriter) {
 	c := MgoDataCollect(DB, C)
 
-	var filter moejson.Mjson
+	var filter JSON.JSON
 	err := json.Unmarshal([]byte(args), &filter)
 	if err != nil {
 		panic("无法 序列化为 json")
 	}
 
 	count_, err := c.Find(&filter).Count()
-	out := xstring.Tostring(count_)
+	out := Object.Tostring(count_)
 	w.Write([]byte(out))
 }
 func findOne(DB string, C string, args string, w http.ResponseWriter) {
 	c := MgoDataCollect(DB, C)
-	js := moejson.Mjson{} //结果
+	js := JSON.JSON{} //结果
 
-	var filter moejson.Mjson
+	var filter JSON.JSON
 	err := json.Unmarshal([]byte(args), &filter)
 	if err != nil {
 		panic("无法 序列化为 json")
@@ -119,8 +120,7 @@ func findOne(DB string, C string, args string, w http.ResponseWriter) {
 }
 func insert(DB string, C string, args string, w http.ResponseWriter) {
 	c := MgoDataCollect(DB, C)
-
-	var inserter moejson.Mjson
+	var inserter JSON.JSON
 	err := json.Unmarshal([]byte(args), &inserter)
 	if err != nil {
 		panic("无法序列化为 json")
@@ -129,7 +129,7 @@ func insert(DB string, C string, args string, w http.ResponseWriter) {
 	if err != nil {
 		panic("插入失败")
 	}
-	out := "{\"nInsert\":0}"
+	out := "{\"nInsert\":1}"
 	w.Write([]byte(out))
 }
 func insertmany(DB string, C string, args string, w http.ResponseWriter) {
@@ -154,7 +154,7 @@ func insertmany(DB string, C string, args string, w http.ResponseWriter) {
 		panic("批量插入失败")
 	}
 
-	out := "{\"nInsert\":" + xstring.Tostring(len(inserterlist)) + "}"
+	out := "{\"nInsert\":" + Object.Tostring(len(inserterlist)) + "}"
 	w.Write([]byte(out))
 }
 func remove(DB string, C string, args string, w http.ResponseWriter) {
@@ -163,7 +163,7 @@ func remove(DB string, C string, args string, w http.ResponseWriter) {
 		w.Write([]byte(out))
 	} else {
 		c := MgoDataCollect(DB, C)
-		var filter moejson.Mjson
+		var filter JSON.JSON
 		err := json.Unmarshal([]byte(args), &filter)
 		if err != nil {
 			panic("条件无法序列化为 json")
@@ -172,7 +172,7 @@ func remove(DB string, C string, args string, w http.ResponseWriter) {
 		if err != nil {
 			panic("删除失败")
 		}
-		out := "{\"nRemove\":" + xstring.Tostring(removeinfo.Removed) + "}"
+		out := "{\"nRemove\":" + Object.Tostring(removeinfo.Removed) + "}"
 		w.Write([]byte(out))
 	}
 }
@@ -196,18 +196,18 @@ func save(DB string, C string, args string, w http.ResponseWriter) {
 			}
 			out = "{\"nInsert\":1}"
 		} else {
-			if bson.IsObjectIdHex(xstring.Tostring(saver["_id"])) == false {
+			if bson.IsObjectIdHex(Object.Tostring(saver["_id"])) == false {
 				panic("saver 中 _id 不正确")
 			} else {
-				filter := bson.M{"_id": bson.ObjectIdHex(xstring.Tostring(saver["_id"]))}
+				filter := bson.M{"_id": bson.ObjectIdHex(Object.Tostring(saver["_id"]))}
 
 				count, _ := c.Find(filter).Count()
-				saver["_id"] = bson.ObjectIdHex(xstring.Tostring(saver["_id"]))
+				saver["_id"] = bson.ObjectIdHex(Object.Tostring(saver["_id"]))
 
 				if count >= 1 {
 					rinfo, err := c.RemoveAll(filter)
 					if err != nil {
-						panic("删除失败" + moejson.ToJsonstring(rinfo))
+						panic("删除失败" + JSON.ToJsonstring(rinfo))
 					}
 					err = c.Insert(saver)
 					if err != nil {
@@ -239,7 +239,7 @@ func update(DB string, C string, args string, w http.ResponseWriter) {
 
 		]
 		*/
-		var updatearg []moejson.Mjson
+		var updatearg []JSON.JSON
 		err := json.Unmarshal([]byte("["+args+"]"), &updatearg)
 		if err != nil || len(updatearg) != 2 {
 			panic("条件无法序列化为 2个json")
@@ -250,7 +250,7 @@ func update(DB string, C string, args string, w http.ResponseWriter) {
 		if err != nil {
 			panic("更新失败")
 		}
-		out := "{\"nUpdate\":" + xstring.Tostring(updateinfo.Updated) + "}"
+		out := "{\"nUpdate\":" + Object.Tostring(updateinfo.Updated) + "}"
 		w.Write([]byte(out))
 	}
 }

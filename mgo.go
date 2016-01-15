@@ -7,7 +7,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-const (
+var (
 	MONGO_URL = "127.0.0.1:27017"
 )
 

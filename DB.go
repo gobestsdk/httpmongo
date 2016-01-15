@@ -4,9 +4,9 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/golangframework/moeregexp"
-	"github.com/golangframework/xstring"
 )
 
 func dbo_Mongo_DB(w http.ResponseWriter, r *http.Request) error {
@@ -18,7 +18,7 @@ func dbo_Mongo_DB(w http.ResponseWriter, r *http.Request) error {
 		if cmd == "show collections" {
 
 			Cs, _ := MgoDatabase(DB).CollectionNames()
-			w.Write([]byte(xstring.Join(Cs, "\n")))
+			w.Write([]byte(strings.Join(Cs, "\n")))
 			return nil
 		}
 		return errors.New("请求命令不支持")

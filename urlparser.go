@@ -2,9 +2,9 @@ package httpmongo
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/golangframework/moeregexp"
-	"github.com/golangframework/xstring"
 )
 
 const (
@@ -41,8 +41,8 @@ func Mongo_DB_parse(urlpath string) (string, string, error) {
 		panic(err)
 		return "", "", errors.New(err)
 	}
-	DBname := urlpath[7:xstring.Index(urlpath, ".")]
-	funcs := urlpath[xstring.Index(urlpath, ".")+1:]
+	DBname := urlpath[7:strings.Index(urlpath, ".")]
+	funcs := urlpath[strings.Index(urlpath, ".")+1:]
 	return DBname, funcs, nil
 }
 
@@ -64,7 +64,7 @@ func Mongo_DB_C_parse(urlpath string) (string, string, string, error) {
 		panic(err)
 		return "", "", "", errors.New(err)
 	}
-	DB_C := xstring.Split(urlpath[7:xstring.Index(urlpath, ".")], "/")
+	DB_C := strings.Split(urlpath[7:strings.Index(urlpath, ".")], "/")
 	if len(DB_C) != 2 {
 		err := "奇怪的错误"
 		panic(err)
@@ -72,6 +72,6 @@ func Mongo_DB_C_parse(urlpath string) (string, string, string, error) {
 	}
 	DB := DB_C[0]
 	C := DB_C[1]
-	funcs := urlpath[xstring.Index(urlpath, ".")+1:]
+	funcs := urlpath[strings.Index(urlpath, ".")+1:]
 	return DB, C, funcs, nil
 }

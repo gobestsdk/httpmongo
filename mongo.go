@@ -3,9 +3,9 @@ package httpmongo
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/golangframework/moeregexp"
-	"github.com/golangframework/xstring"
 )
 
 func dbo_Mongo(w http.ResponseWriter, r *http.Request) error {
@@ -18,7 +18,7 @@ func dbo_Mongo(w http.ResponseWriter, r *http.Request) error {
 				w.Write([]byte(err.Error()))
 			}
 			dbs, _ := s.DatabaseNames()
-			w.Write([]byte(xstring.Join(dbs, "\n")))
+			w.Write([]byte(strings.Join(dbs, "\n")))
 			return nil
 		}
 		return errors.New("请求命令不支持")
