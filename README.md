@@ -1,15 +1,16 @@
-# httpDB
+# httpmongo
 http方式的增删查改
 
-##适用类型
+## 适用类型
 ###.1.对于小型web
-httpdb使mongodb支持前端页面ajax直接以json形式进行操作
+httpmongo使mongodb支持前端页面ajax直接以json形式进行操作
+
+### 1.2危险性：如果不对路由进行二次封装，直接引用httpmongo，会使得mongo的增删改查，前端可以直接调用，会丧失对数据库的保护。
+
 ###.2.对于大中型web
-httpdb把数据库封装成一个高性能http读写接口，可以当作中间件，隐藏在内网，与队列组建结合使用
+httpdb把数据库封装成一个高性能http读写接口，可以当作中间件，隐藏在内网，与队列组件结合使用
 
 ##httpmongo
-
-
 ```javascript
 
 ```
@@ -20,7 +21,7 @@ httpdb把数据库封装成一个高性能http读写接口，可以当作中间�
 
 ### 以下函数名，与mongo shell保持一致命名
 
-官方文档
+mongo shell官方文档
 [https://docs.mongodb.org/manual/reference/method/](https://docs.mongodb.org/manual/reference/method/)
 ``` shell
 /mongo.show dbs	
@@ -39,3 +40,43 @@ httpdb把数据库封装成一个高性能http读写接口，可以当作中间�
 ```
 其余重复命令，暂不支持
 
+### 用法示例
+``` go
+//
+package main
+
+import (
+	"log"
+	"net/http"
+	"os"
+	
+	"github.com/golangframework/httpmongo"
+	"github.com/golangframework/moeregexp"
+)
+
+var (
+	root    = ""
+	mongodb = "127.0.0.1:27017"
+)
+
+func main() {
+	//检查根目录
+	root, _ = os.Getwd()
+	var mux = http.NewServeMux()
+	mux.HandleFunc("/", router)
+	err := http.ListenAndServe(":8090", mux)
+	log.Println("http.ListenAndServe(:8090)")
+	if err != nil {
+		log.Fatal("http.ListenAndServe:", err.Error())
+	}
+}
+func router(w http.ResponseWriter, r *http.Request) {
+	urlpath := r.URL.Path
+  //路由匹配正则 "^/mongo.+"
+	if moeregexp.IsMatch(httpmongo.Mongo_path, urlpath) {
+	  //调用handler_mongo，处理 /mongo路由下的所有请求
+		httpmongo.Httphandler_mongo(mongodb, w, r)
+	}
+}
+
+```
