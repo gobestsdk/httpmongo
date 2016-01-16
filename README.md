@@ -25,15 +25,51 @@ mongo shell官方文档
 [https://docs.mongodb.org/manual/reference/method/](https://docs.mongodb.org/manual/reference/method/)
 ``` shell
 /mongo.show dbs	
-
+//无需参数
 /mongo/DB.show collections
-
+//无需参数
 /mongo/DB/C.count() 	查询集合元素数量
+//无需参数
+```
+``` javascript
+
 /mongo/DB/C.find() 	查询所有文档
+var filter={"pid":"123456"}
+ $.post("/mongo/DB/C.find(&httprequestbody)",JSON.stringify(filter),function(data,status){
+    if(data==null||data=="[]"||data=="")
+    {
+    	var bds=JSON.parse(data)
+    }
+})
+//当没有参数时，返回所有元素
+
 /mongo/DB/C.findOne()	查询并返回一个对象。如果没有找到则返回 null
 /mongo/DB/C.findcount() 	返回匹配该查询的对象总数
+
+这里直接返回数字，而不是jsonstring
+
 /mongo/DB/C.insert()		向聚集中插入对象。不会检查该对象是否已经存在聚集中
+var inserter={"pid":"123456"}
+ $.post("/mongo/DB/C.find(&httprequestbody)",JSON.stringify(inserter),function(data,status){
+    if(data==null)
+    {
+    	console.log(data)
+    	//如果出错，则不会返回
+    	//一般插入成功，会返回{"nInsert":1}
+    	
+    }
+})
 /mongo/DB/C.insertmany()		向聚集中批量插入对象。
+var inserter={"pid":"123456"}
+ $.post("/mongo/DB/C.find(&httprequestbody)",JSON.stringify(inserter),function(data,status){
+    if(data==null)
+    {
+    	console.log(data)
+    	//如果出错，则不会返回
+    	//一般插入成功，会返回{"nInsert":1}
+    	
+    }
+})
 /mongo/DB/C.remove()    从聚集里删除匹配的对象
 /mongo/DB/C.save()  在聚集中保存对象，如果已经存在的话则替换它
 /mongo/DB/C.update()    在聚集中更新对象。update() 有许多参数
