@@ -50,7 +50,7 @@ var filter={"pid":"123456"}
 
 /mongo/DB/C.insert()		向聚集中插入对象。不会检查该对象是否已经存在聚集中
 var inserter={"pid":"123456"}
- $.post("/mongo/DB/C.find(&httprequestbody)",JSON.stringify(inserter),function(data,status){
+ $.post("/mongo/DB/C.insert(&httprequestbody)",JSON.stringify(inserter),function(data,status){
     if(data==null)
     {
     	console.log(data)
@@ -60,19 +60,45 @@ var inserter={"pid":"123456"}
     }
 })
 /mongo/DB/C.insertmany()		向聚集中批量插入对象。
-var inserter={"pid":"123456"}
- $.post("/mongo/DB/C.find(&httprequestbody)",JSON.stringify(inserter),function(data,status){
+javascript jquery范例用法
+var inserters='{"pid":"123456"},{"pid":"23"},{"name":"lipeng"}'
+ $.post("/mongo/DB/C.insertmany(&httprequestbody)",inserters,function(data,status){
     if(data==null)
     {
     	console.log(data)
     	//如果出错，则不会返回
-    	//一般插入成功，会返回{"nInsert":1}
-    	
+    	//一般插入成功，会返回{"nInsert":3}
     }
 })
 /mongo/DB/C.remove()    从聚集里删除匹配的对象
+javascript jquery范例用法
+var filter={"pid":"123456"}
+ $.post("/mongo/DB/C.remove(&httprequestbody)",JSON.stringify(filter),function(data,status){
+    if(data==null)
+    {
+    	console.log(data)
+    	//如果出错，则不会返回
+    	//一般插入成功，会返回{"nRemove":2}
+    }
+})
 /mongo/DB/C.save()  在聚集中保存对象，如果已经存在的话则替换它
-/mongo/DB/C.update()    在聚集中更新对象。update() 有许多参数
+save支持1种用法
+
+/mongo/DB/C.update()    在聚集中更新对象。
+update应当传入2个json
+javascript jquery范例用法
+var inserter={"pid":"123456"}
+var updater={"$set":{"name":"lipeng"}}
+ $.post("/mongo/DB/C.insertmany(&httprequestbody)",JSON.stringfly(inserter)+','+JSON.string(updater),function(data,status){
+    if(data==null)
+    {
+    	console.log(data)
+    	//如果出错，则不会返回
+    	//一般插入成功，会返回{"nUpdate":2}
+    }
+})
+
+注意，updater必须填写mongo的操作符哦
 ```
 其余重复命令，暂不支持
 
