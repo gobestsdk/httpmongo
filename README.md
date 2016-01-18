@@ -10,7 +10,7 @@ httpmongo使mongodb支持前端页面ajax直接以json形式进行操作
 httpdb把数据库封装成一个高性能http读写接口，可以当作中间件，隐藏在内网，与队列组件结合使用
 
 ##httpmongo原理
-![img](/exampleimg/httpmongo.png)
+![img](/exampleimg/httpmongo.jpg)
 ### &httprequestbody
 &httprequestbody表示http.request.body体中的byte[]数据,该数据应该可以被解析为json
 应当用&data来表示比较长的json数据，较短的json数据直接放在url中即可
