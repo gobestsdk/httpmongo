@@ -8,6 +8,7 @@ import (
 
 func Httphandler_mongo(DBaddr string, w http.ResponseWriter, r *http.Request) {
 	MONGO_URL = DBaddr
+
 	checkrequest(w, r)
 	if moeregexp.IsMatch(Mongo_DB_C_func_path, r.URL.Path) {
 		dbo_Mongo_DB_C(w, r)
@@ -20,6 +21,7 @@ func Httphandler_mongo(DBaddr string, w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+
 }
 
 func checkrequest(w http.ResponseWriter, r *http.Request) bool {

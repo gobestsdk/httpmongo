@@ -1,14 +1,13 @@
 package httpmongo
 
 import (
-	"errors"
 	"net/http"
 	"strings"
 
 	"github.com/golangframework/moeregexp"
 )
 
-func dbo_Mongo(w http.ResponseWriter, r *http.Request) error {
+func dbo_Mongo(w http.ResponseWriter, r *http.Request) {
 	var cmd = ""
 	if moeregexp.IsMatch(Mongo_func_path, r.URL.Path) {
 		cmd, _ := Mongo_parse(r.URL.Path)
@@ -16,15 +15,15 @@ func dbo_Mongo(w http.ResponseWriter, r *http.Request) error {
 			s, err := MgoSession()
 			if err != nil {
 				w.Write([]byte(err.Error()))
+				return
 			}
 			dbs, _ := s.DatabaseNames()
 			w.Write([]byte(strings.Join(dbs, "\n")))
-			return nil
+			return
 		}
-		return errors.New("请求命令不支持")
-
+		w.Write([]byte("请求命令不支持"))
+		return
 	} else {
 		w.Write([]byte("请求不匹配" + cmd))
-		return errors.New("请求不匹配")
 	}
 }

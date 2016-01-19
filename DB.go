@@ -1,7 +1,6 @@
 package httpmongo
 
 import (
-	"errors"
 	"log"
 	"net/http"
 	"strings"
@@ -9,22 +8,24 @@ import (
 	"github.com/golangframework/moeregexp"
 )
 
-func dbo_Mongo_DB(w http.ResponseWriter, r *http.Request) error {
+func dbo_Mongo_DB(w http.ResponseWriter, r *http.Request) {
 	var cmd = ""
 	if moeregexp.IsMatch(Mongo_DB_func_path, r.URL.Path) {
-
 		DB, cmd, _ := Mongo_DB_parse(r.URL.Path)
 		log.Print("匹配:" + DB + "\t" + cmd)
 		if cmd == "show collections" {
-
-			Cs, _ := MgoDatabase(DB).CollectionNames()
+			s, err := MgoSession()
+			if err != nil {
+				w.Write([]byte(err.Error()))
+				return
+			}
+			Cs, _ := s.DB(DB).CollectionNames()
 			w.Write([]byte(strings.Join(Cs, "\n")))
-			return nil
+			return
 		}
-		return errors.New("请求命令不支持")
-
+		w.Write([]byte("请求命令不支持"))
+		return
 	} else {
 		w.Write([]byte("请求不匹配" + cmd))
-		return errors.New("请求不匹配")
 	}
 }
