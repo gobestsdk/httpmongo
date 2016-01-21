@@ -10,7 +10,11 @@ import (
 func dbo_Mongo(w http.ResponseWriter, r *http.Request) {
 	var cmd = ""
 	if moeregexp.IsMatch(Mongo_func_path, r.URL.Path) {
-		cmd, _ := Mongo_parse(r.URL.Path)
+		cmd, err:= Mongo_parse(r.URL.Path)
+		if err != nil {
+				w.Write([]byte(err.Error()))
+				return
+			}
 		if cmd == "show dbs" {
 			s, err := MgoSession()
 			if err != nil {

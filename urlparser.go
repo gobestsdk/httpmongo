@@ -18,13 +18,12 @@ const (
 
 func Mongo_parse(urlpath string) (string, error) {
 	/*	support list
-
-		/mongo/show dbs
+	
+		/mongo.show dbs
 
 	*/
 	if !moeregexp.IsMatch(Mongo_func_path, urlpath) {
 		err := "urlpath:\n" + urlpath + "不匹配正则" + Mongo_func_path
-		panic(err)
 		return "", errors.New(err)
 	}
 	funcs := urlpath[7:]
@@ -38,7 +37,6 @@ func Mongo_DB_parse(urlpath string) (string, string, error) {
 	*/
 	if !moeregexp.IsMatch(Mongo_DB_func_path, urlpath) {
 		err := "urlpath:\n" + urlpath + "不匹配正则" + Mongo_DB_func_path
-		panic(err)
 		return "", "", errors.New(err)
 	}
 	DBname := urlpath[7:strings.Index(urlpath, ".")]
@@ -61,13 +59,11 @@ func Mongo_DB_C_parse(urlpath string) (string, string, string, error) {
 	*/
 	if !moeregexp.IsMatch(Mongo_DB_C_func_path, urlpath) {
 		err := "urlpath:\n" + urlpath + "不匹配正则" + Mongo_DB_C_func_path
-		panic(err)
 		return "", "", "", errors.New(err)
 	}
 	DB_C := strings.Split(urlpath[7:strings.Index(urlpath, ".")], "/")
 	if len(DB_C) != 2 {
 		err := "奇怪的错误"
-		panic(err)
 		return "", "", "", errors.New(err)
 	}
 	DB := DB_C[0]

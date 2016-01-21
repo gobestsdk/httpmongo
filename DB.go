@@ -11,7 +11,11 @@ import (
 func dbo_Mongo_DB(w http.ResponseWriter, r *http.Request) {
 	var cmd = ""
 	if moeregexp.IsMatch(Mongo_DB_func_path, r.URL.Path) {
-		DB, cmd, _ := Mongo_DB_parse(r.URL.Path)
+		DB, cmd,err:= Mongo_DB_parse(r.URL.Path)
+		if err != nil {
+				w.Write([]byte(err.Error()))
+				return
+			}
 		log.Print("匹配:" + DB + "\t" + cmd)
 		if cmd == "show collections" {
 			s, err := MgoSession()
