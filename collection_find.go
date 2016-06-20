@@ -34,7 +34,7 @@ func find(DB string, C string, args string, w http.ResponseWriter) {
 		w.Write([]byte("find失败"))
 		return
 	}
-	jsonlist := JSON.ToJsonarraystring(js) //结果json字符串集合
+	jsonlist := JSON.ToJsonstringArray(js) //结果json字符串集合
 	out := "[" + strings.Join(jsonlist, ",") + "]"
 	w.Write([]byte(out))
 }
